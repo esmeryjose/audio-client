@@ -1,67 +1,45 @@
 import React, { Component } from "react";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, Route } from "react-router-dom";
 import { Input, Menu, Header } from "semantic-ui-react";
 
 class NavBar extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
-      activeItem: this.activeItem(),
       input: ""
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
-  activeItem() {
-    let splitLocation = window.location.href.split("/");
-    if (splitLocation[splitLocation.length - 1] === "new") {
-      return "Add Picture";
-    } else {
-      return "home";
-    }
-  }
-
-  handleItemClick = (e, { name }) => {
-    this.setState({ activeItem: name });
+  loggingOut = () => {
+    this.props.handleLogOut(false);
   };
 
-  handleChange(e, history) {
-    const input = e.target.value;
-
-    if (!this.state.input) {
-      history.push("/pictures/");
-    }
-
-    this.setState(
-      {
-        input
-      },
-      () => {
-        this.props.updateSearch(input);
-      }
+  renderLoggedInBar = () => {
+    return (
+      <Menu>
+        <Menu.Item name={"Log Out"} onClick={this.loggingOut} />
+        <SearchBar input={this.state.input} />
+      </Menu>
     );
-  }
+  };
+
+  renderLoggedOutBar = () => {
+    return (
+      <Menu>
+        <a href="http://localhost:3000/api/v1/auth">
+          <Menu.Item className="" name={"Log In"} />
+        </a>
+      </Menu>
+    );
+  };
 
   render() {
-    const { activeItem } = this.state;
-    this.activeItem();
     return (
       <div>
-        <Menu>
-          <Menu.Item
-            className=""
-            name="home"
-            as={Link}
-            to="/pictures"
-            active={activeItem === "home"}
-            onClick={this.handleItemClick}
-          />
-          <SearchBar
-            input={this.state.input}
-            handleChange={this.handleChange}
-          />
-        </Menu>
+        {this.props.loggedIn
+          ? this.renderLoggedInBar()
+          : this.renderLoggedOutBar()}
       </div>
     );
   }
@@ -73,17 +51,17 @@ const TheHeader = () => (
   </Header>
 );
 
-const SearchBar = withRouter(({ history, input, handleChange }) => (
+const SearchBar = () => (
   <Menu.Menu position="right">
     <Menu.Item>
       <Input
         icon="search"
-        value={input}
+        value={""}
         placeholder="Search..."
-        onChange={event => handleChange(event, history)}
+        onChange={e => {}}
       />
     </Menu.Item>
   </Menu.Menu>
-));
+);
 
 export { TheHeader, NavBar };
