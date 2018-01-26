@@ -3,7 +3,7 @@ import "./App.css";
 import { Route } from "react-router-dom";
 import { TheHeader, NavBar } from "./Nav";
 import Profile from "./Profile";
-import Auth from "../Adapters/Auth";
+import Auth from "../adapters/Auth";
 
 class App extends Component {
   constructor() {
